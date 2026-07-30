@@ -58,14 +58,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      // C. Transmission des données vers le formulaire Tally parent
-      window.parent.postMessage({
-        type: "TALLY_UPDATE_HIDDEN_FIELDS",
-        payload: {
-          dates_selectionnees_custom: dateStr,
-          unique_session_id: sessionIdFromUrl
-        }
-      }, "*");
+      // C. Transmission des données vers Tally (Format officiel API Tally Embed)
+      // Format 1 : Protocole officiel Tally Embed
+      window.parent.postMessage(
+        JSON.stringify({
+          key: "setHiddenFields",
+          value: {
+            dates_selectionnees_custom: dateStr,
+            unique_session_id: sessionIdFromUrl
+          }
+        }),
+        "*"
+      );
+
+      // Format 2 : Format Objet (Sécurité de secours)
+      window.parent.postMessage(
+        {
+          type: "TALLY_SET_PAYLOAD",
+          payload: {
+            dates_selectionnees_custom: dateStr,
+            unique_session_id: sessionIdFromUrl
+          }
+        },
+        "*"
+      );
     }
   });
 
