@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  // 1. Récupération des éléments du DOM (champs HTML)
-  const dateListContainer = document.getElementById("date-list");
+  // 1. Récupération des éléments du DOM
+  const dateListContainer = document.getElementById("date-list") || document.getElementById("selected-dates-summary");
   const hiddenDatesInput = document.getElementById("dates_selectionnees_custom");
   const hiddenSessionInput = document.getElementById("unique_session_id");
 
-  // 2. Récupérer l'ID de session depuis l'URL (si transmis par Tally/iFrame)
+  // 2. Récupérer l'ID de session depuis l'URL
   const urlParams = new URLSearchParams(window.location.search);
   const sessionIdFromUrl = urlParams.get("unique_session_id") || urlParams.get("session_id") || "";
 
@@ -13,29 +13,31 @@ document.addEventListener("DOMContentLoaded", function () {
     hiddenSessionInput.value = sessionIdFromUrl;
   }
 
-  // 3. Calcul de la date d'aujourd'hui et de la date limite (+30 jours)
+  // 3. Calcul de la date d'aujourd'hui et de la limite (+30 jours)
   const today = new Date();
   const maxDateLimit = new Date();
   maxDateLimit.setDate(today.getDate() + 30);
 
-  // 4. Sécurité pour charger la langue française Flatpickr
+  // 4. Configurer la langue française si disponible
   if (typeof flatpickr !== "undefined" && flatpickr.l10ns && flatpickr.l10ns.fr) {
     flatpickr.localize(flatpickr.l10ns.fr);
   }
 
-  // 5. Initialisation du calendrier Flatpickr
-  flatpickr("#inline-calendar", {
-    inline: true,              // Affiche le calendrier directement sur la page
-    mode: "multiple",          // Permet la sélection de plusieurs dates
-    dateFormat: "Y-m-d",       // Format standard ISO (YYYY-MM-DD) idéal pour Make/Tally
-    minDate: "today",          // Empêche la sélection de dates passées
-    maxDate: maxDateLimit,     // Limite à 30 jours dans le futur
-    locale: "fr",              // Calendrier en français
+  // 5. Recherche du conteneur HTML du calendrier (#inline-calendar ou #date-picker-input)
+  const calendarTarget = document.getElementById("inline-calendar") ? "#inline-calendar" : "#date-picker-input";
 
-    // Fonction déclenchée à chaque clic / modification de sélection
-    onChange: function (selectedDates, dateStr, instance) {
+  // 6. Initialisation UNIQUE de Flatpickr
+  flatpickr(calendarTarget, {
+    inline: true,              // Calendrier incrusté
+    mode: "multiple",          // Sélection multiple
+    dateFormat: "Y-m-d",       // Format ISO (YYYY-MM-DD)
+    minDate: "today",          // Bloque les dates passées
+    maxDate: maxDateLimit,     // Bloque à 30 jours
+    locale: "fr",              // Français
 
-      // A. Mettre à jour le champ caché avec les dates (ex: "2026-08-01, 2026-08-05")
+    onChange: function (selectedDates, dateStr) {
+
+      // A. Mettre à jour le champ hidden HTML s'il existe
       if (hiddenDatesInput) {
         hiddenDatesInput.value = dateStr;
       }
@@ -45,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (selectedDates.length === 0) {
           dateListContainer.innerHTML = "Aucune date sélectionnée";
         } else {
-          // Formater les dates joliment pour l'affichage (ex: 01/08/2026)
           const formattedDisplay = selectedDates.map(date => {
             const day = String(date.getDate()).padStart(2, "0");
             const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -53,49 +54,19 @@ document.addEventListener("DOMContentLoaded", function () {
             return `${day}/${month}/${year}`;
           });
 
-          dateListContainer.innerHTML = formattedDisplay.join(", ");
+          dateListContainer.innerHTML = `<strong>${selectedDates.length} date(s) choisie(s) :</strong><br>` + formattedDisplay.join(", ");
         }
       }
 
-      // C. Transmission native vers Tally & Make (iFrame)
-      window.parent.postMessage({
-        type: 'TALLY_SET_PAYLOAD',
-        payload: {
-          dates_selectionnees_custom: dateStr,
-          unique_session_id: hiddenSessionInput ? hiddenSessionInput.value : ""
-        }
-      }, "*");
-    }
-  });
-
-});
-document.addEventListener("DOMContentLoaded", function () {
-  const summaryBox = document.getElementById("selected-dates-summary");
-
-  const picker = flatpickr("#date-picker-input", {
-    mode: "multiple",
-    dateFormat: "Y-m-d",
-    locale: "fr",
-    minDate: "today",
-    inline: true,
-    onChange: function (selectedDates, dateStr) {
-      const formattedDates = dateStr;
-
-      if (selectedDates.length > 0) {
-        summaryBox.innerHTML = `<strong>${selectedDates.length} date(s) choisie(s) :</strong><br>${formattedDates.split(', ').join('<br>')}`;
-      } else {
-        summaryBox.innerHTML = "Aucune date sélectionnée pour le moment.";
-      }
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const sessionId = urlParams.get('unique_session_id') || "";
-
-      // Transmission continue vers Tally
+      // C. Transmission des données vers le formulaire Tally parent
       window.parent.postMessage({
         type: "TALLY_UPDATE_HIDDEN_FIELDS",
-        dates_selectionnees_custom: formattedDates,
-        unique_session_id: sessionId
+        payload: {
+          dates_selectionnees_custom: dateStr,
+          unique_session_id: sessionIdFromUrl
+        }
       }, "*");
     }
   });
+
 });
