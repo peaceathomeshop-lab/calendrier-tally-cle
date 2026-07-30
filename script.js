@@ -69,3 +69,33 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+document.addEventListener("DOMContentLoaded", function () {
+  const summaryBox = document.getElementById("selected-dates-summary");
+
+  const picker = flatpickr("#date-picker-input", {
+    mode: "multiple",
+    dateFormat: "Y-m-d",
+    locale: "fr",
+    minDate: "today",
+    inline: true,
+    onChange: function (selectedDates, dateStr) {
+      const formattedDates = dateStr;
+
+      if (selectedDates.length > 0) {
+        summaryBox.innerHTML = `<strong>${selectedDates.length} date(s) choisie(s) :</strong><br>${formattedDates.split(', ').join('<br>')}`;
+      } else {
+        summaryBox.innerHTML = "Aucune date sélectionnée pour le moment.";
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionId = urlParams.get('unique_session_id') || "";
+
+      // Transmission continue vers Tally
+      window.parent.postMessage({
+        type: "TALLY_UPDATE_HIDDEN_FIELDS",
+        dates_selectionnees_custom: formattedDates,
+        unique_session_id: sessionId
+      }, "*");
+    }
+  });
+});
