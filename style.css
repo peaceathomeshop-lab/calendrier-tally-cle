@@ -1,0 +1,56 @@
+/* Style général du conteneur */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: transparent;
+  margin: 0;
+  padding: 10px;
+  color: #2d3748;
+}
+
+.calendar-container {
+  max-width: 450px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-size: 1.1rem;
+  color: #1a202c;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #718096;
+  margin-bottom: 15px;
+}
+
+/* Alignement du calendrier au centre */
+.flatpickr-calendar.inline {
+  margin: 0 auto 15px auto !important;
+  box-shadow: none !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+}
+
+/* Zone récapitulative des dates sélectionnées */
+.selected-summary {
+  background-color: #f7fafc;
+  border: 1px solid #edf2f7;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+#date-list {
+  margin-top: 6px;
+  color: #2b6cb0;
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: break-word;
+}
