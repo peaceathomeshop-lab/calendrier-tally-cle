@@ -35,3 +35,17 @@
   <script src="script.js"></script>
 </body>
 </html>
+<div class="calendar-wrapper">
+  <label class="calendar-label">
+    📅 Sélectionnez les dates de passage souhaitées :
+  </label>
+  <input type="text" id="date-picker-input" readonly />
+  <div id="selected-dates-summary" class="summary-box">
+    Aucune date sélectionnée pour le moment.
+  </div>
+</div>
+
+<!-- Liaisons avec le calendrier Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
