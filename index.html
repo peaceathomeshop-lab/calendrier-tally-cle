@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sélection des dates</title>
+  
+  <!-- Styles du calendrier Flatpickr -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="calendar-container">
+    <h3>Sélectionnez vos jours d'intervention</h3>
+    <p class="subtitle">Cliquez sur les dates souhaitées dans les 30 prochains jours :</p>
+    
+    <!-- Emplacement du calendrier -->
+    <div id="inline-calendar"></div>
+    
+    <div class="selected-summary">
+      <strong>Dates sélectionnées :</strong>
+      <div id="date-list">Aucune date sélectionnée</div>
+    </div>
+
+    <!-- Champs masqués exactement synchronisés avec Tally & Make -->
+    <input type="hidden" id="unique_session_id" name="unique_session_id" value="">
+    <input type="hidden" id="dates_selectionnees_custom" name="dates_selectionnees_custom" value="">
+  </div>
+
+  <!-- Scripts nécessaires -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
